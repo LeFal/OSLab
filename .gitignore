@@ -1,1 +1,6 @@
+*.o
 *.cmd
+*.ko
+*.ko.cmd
+*.o.cmd
+
