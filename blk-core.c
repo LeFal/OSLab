@@ -2081,6 +2081,42 @@ out:
 }
 EXPORT_SYMBOL(generic_make_request);
 
+/*add file information to circular queue*/
+
+struct io_cir_q cir_q = { .q_count = 0, .fir_index = 0, .curr_index = 0 };
+EXPORT_SYMBOL(cir_q);
+int q_boot = 0;
+EXPORT_SYMBOL(q_boot);
+
+static struct timespec bio_time;
+
+int add_io_q(struct bio *bio){
+
+	if(cir_q.curr_index >= Q_SIZE)
+		return -1;
+
+	if (++cir_q.curr_index == Q_SIZE)
+		cir_q.curr_index = 0;
+	/*file system name*/
+	cir_q.q[cir_q.curr_index].filename = bio->bi_bdev->bd_super->s_type->name;
+	/*system time*/
+	getnstimeofday(&bio_time);
+	cir_q.q[cir_q.curr_index].time.tv_sec = bio_time.tv_sec;
+	cir_q.q[cir_q.curr_index].time.tv_nsec = bio_time.tv_nsec;
+	/*sector location*/
+	cir_q.q[cir_q.curr_index].sector_num = bio->bi_iter.bi_sector;
+
+	if (cir_q.q_count != Q_SIZE)
+		cir_q.q_count++;
+	else {
+		if (++cir_q.fir_index == QUESIZE)
+			cir_q.fir_index = 0;
+	}
+	return 0;
+
+}
+
+
 /**
  * submit_bio - submit a bio to the block device layer for I/O
  * @rw: whether to %READ or %WRITE, or maybe to %READA (read ahead)
@@ -2113,6 +2149,10 @@ blk_qc_t submit_bio(int rw, struct bio *bio)
 			task_io_account_read(bio->bi_iter.bi_size);
 			count_vm_events(PGPGIN, count);
 		}
+
+		if (q_boot)
+			if (add_io_q)
+				printk("error occurred while adding to cir_q");
 
 		if (unlikely(block_dump)) {
 			char b[BDEVNAME_SIZE];
