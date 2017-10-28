@@ -102,7 +102,7 @@
 
 /*sw add*/
 #include <linux/time.h>
-#define QUESIZE 1000
+#define Q_SIZE 1000
 
 /*declearation for this module*/
 struct io_description {
