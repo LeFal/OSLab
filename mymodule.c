@@ -14,6 +14,17 @@
 static struct proc_dir_entry *proc_dir;
 static struct proc_dir_entry *proc_file;
 
+#define PROCSIZE 100000
+#define ASCIENTER 0x0A
+#define ASCISPACE 0x20
+
+// access blk-core.c variance
+extern struct io_cir_q cir_q;
+extern int q_boot;
+
+static char proc_buf[PROCSIZE] = "";
+int proc_fp = 0;
+
 // run when opened
 static int my_open(struct inode *inode, struct file *file)
 {
@@ -32,8 +43,13 @@ static ssize_t my_write(struct file *file, const char __user *user_buffer, size_
 			long sector_num = cir_q.que[i].sector_num;
 			long time = cir_q.que[i].time.tv_sec;
 
-			
-
+			// write info to buffer
+			proc_fp += sprintf(&proc_buf[proc_fp], "%s", filename);
+			proc_buf[proc_fp++] = ASCISPACE;
+			proc_fp += sprintf(&proc_buf[proc_fp], "%lu", sector_num);
+			proc_buf[proc_fp++] = ASCISPACE;
+			proc_fp += sprintf(&proc_buf[proc_fp], "%ld", time);
+			proc_buf[proc_fp++] = ASCIENTER;
 
 			cir_q.q_count--;
 			i++;
