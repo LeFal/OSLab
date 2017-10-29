@@ -100,7 +100,7 @@
 #define bio_sectors(bio)	((bio)->bi_iter.bi_size >> 9)
 #define bio_end_sector(bio)	((bio)->bi_iter.bi_sector + bio_sectors((bio)))
 
-/*sw add*/
+
 #include <linux/time.h>
 #define Q_SIZE 1000
 
@@ -117,7 +117,7 @@ struct io_cir_q {
 	int fir_index;
 	int curr_index;
 };
-/*sw end*/
+
 
 /*
  * Check whether this bio carries any data or not. A NULL bio is allowed.
