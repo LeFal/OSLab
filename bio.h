@@ -112,7 +112,7 @@ struct io_description {
 };
 
 struct io_cir_q {
-	struct io_description q[QUESIZE];
+	struct io_description q[Q_SIZE];
 	int q_count;
 	int fir_index;
 	int curr_index;
