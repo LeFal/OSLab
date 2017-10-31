@@ -9,15 +9,17 @@
 int main(void) {
 	int read_file = open("/proc/myproc/myproc", O_RDONLY);
 	char buf[SIZE] = "";
-
-	int read_result = read(fd, buf, SIZE);
+	printf("1");
+	int read_result = read(read_file, buf, SIZE);
 	if (read_result < 0) {
 		printf("fail\n");
 		return 0;
+	} else {
+		printf("read_success\n");
 	}
 
 	int write_file = open("proc_result.txt", O_WRONLY);
-	if (write(fd_write, buf, SIZE) < 0) {
+	if (write_file < 0) {
 		printf("write fail\n");
 		return 0;
 	}

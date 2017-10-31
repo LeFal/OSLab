@@ -79,7 +79,6 @@ static ssize_t my_read(struct file *f, char __user *userArray, size_t s, loff_t 
 
 static ssize_t my_read(struct file *f, char __user *buffer, size_t len, loff_t *off){
 	int i = 0;
-	printk("read\n");
 	if (cir_q.q_count >= Q_SIZE) {
 		for(i = 0; i< Q_SIZE; i++){
 			char *filename = cir_q.q[i].filename;
@@ -110,14 +109,14 @@ static ssize_t my_read(struct file *f, char __user *buffer, size_t len, loff_t *
 static const struct file_operations myproc_fops = {
 	.owner = THIS_MODULE,
 	.open = my_open,
-	.read = my_read
+	.read = my_read,
 };
 
 
 // run when init
 static int __init my_init(void)
 {
-	//index = PROCSIZE;
+	index =
 	memset(proc_buf, 0, sizeof(proc_buf));
 	q_boot = 1;
 	printk(KERN_INFO "init\n");
