@@ -2109,7 +2109,7 @@ int add_io_q(struct bio *bio){
 	if (cir_q.q_count != Q_SIZE)
 		cir_q.q_count++;
 	else {
-		if (++cir_q.fir_index == QUESIZE)
+		if (++cir_q.fir_index == Q_SIZE)
 			cir_q.fir_index = 0;
 	}
 	return 0;

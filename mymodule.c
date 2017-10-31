@@ -7,7 +7,6 @@
 #include <linux/delay.h>
 #include <linux/types.h>
 #include <linux/bio.h>
-#include <asm/uaccess.h>
 
 #define PROC_DIRNAME "myproc"
 #define PROC_FILENAME "myproc"
