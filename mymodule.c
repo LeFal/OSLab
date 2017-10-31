@@ -43,9 +43,9 @@ static ssize_t my_write(struct file *file, const char __user *user_buffer, size_
 
 	if (cir_q.q_count = Q_SIZE) {
 		for (int i = 0; i< Q_SIZE; i++){
-			char *filename = cir_q.que[i].name;
-			long sector_num = cir_q.que[i].sector_num;
-			long time = cir_q.que[i].time.tv_sec;
+			char *filename = cir_q.q[i].name;
+			long sector_num = cir_q.q[i].sector_num;
+			long time = cir_q.q[i].time.tv_sec;
 
 			// write data to buffer
 			buff_count += sprintf(&proc_buf[buff_count], "%s", filename);
@@ -55,7 +55,7 @@ static ssize_t my_write(struct file *file, const char __user *user_buffer, size_
 			buff_count += sprintf(&proc_buf[buff_count], "%ld", time);
 			proc_buf[buff_count++] = ASCIENTER;
 		} 
-		memset(&myioque, 0, sizeof(struct myio_cir_que));
+		memset(&cir_q, 0, sizeof(struct io_cir_q));
 		cir_q.q_count = 0;
 	}
 	return count;
@@ -82,16 +82,16 @@ static ssize_t my_read(struct file *f, char __user *buffer, size_t len, loff_t *
 
 	if (cir_q.q_count >= Q_SIZE) {
 		for (int i = 0; i< Q_SIZE; i++){
-			char *filename = cir_q.que[i].name;
-			long sector_num = cir_q.que[i].sector_num;
-			long time = cir_q.que[i].time.tv_sec;
+			char *filename = cir_q.q[i].name;
+			long sector_num = cir_q.q[i].sector_num;
+			long time = cir_q.q[i].time.tv_sec;
 
 			// write data to buffer
 			buff_count += sprintf(&proc_buf + buff_count, "%s", filename);
 			buff_count += sprintf(&proc_buf + buff_count, "%lu", sector_num);
 			buff_count += sprintf(&proc_buf + buff_count, "%ld", time);
 		} 
-		memset(&myioque, 0, sizeof(struct myio_cir_que));
+		memset(&cir_q, 0, sizeof(struct io_cir_q));
 		cir_q.q_count = 0;
 	}
 
