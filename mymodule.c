@@ -14,7 +14,7 @@
 static struct proc_dir_entry *proc_dir;
 static struct proc_dir_entry *proc_file;
 
-#define PROCSIZE 1024
+#define PROCSIZE 1000
 #define ASCIENTER 0x0A
 #define ASCISPACE 0x20
 
@@ -23,7 +23,7 @@ extern struct io_cir_q cir_q;
 extern int q_boot;
 
 static char proc_buf[PROCSIZE] = "";
-static unsigned long proc_buf_size = 0;
+//static unsigned long proc_buf_size = 0;
 
 int buff_count = 0;
 
@@ -34,49 +34,56 @@ static int my_open(struct inode *inode, struct file *file)
 	return 0;
 }
 
-/*
+
 static ssize_t my_write(struct file *file, const char __user *user_buffer, size_t len, loff_t *off)
 {
-	//printk(KERN_INFO "write\n");
-	
+	printk(KERN_INFO "write\n");	
+	int i = 0;
+	if (len > 0)
+		retrun len;
+	if (my
+			
 
-	if (cir_q.q_count = Q_SIZE) {
-		for (int i = 0; i< Q_SIZE; i++){
-			char *filename = cir_q.q[i].name;
-			long sector_num = cir_q.q[i].sector_num;
-			long time = cir_q.q[i].time.tv_sec;
-
+	if (cir_q.q_count == Q_SIZE) {
+		for (i = 0; i< Q_SIZE; i++){
+			//char *filename = cir_q.q[i].filename;
+			//long sector_num = cir_q.q[i].sector_num;
+			//long time = cir_q.q[i].time.tv_sec;
+			
+			printk("name : %s\n",cir_q.q[i].filename);
+			printk("sectornum : %lu\n",cir_q.q[i].sector_num);
+			//printk("time : %ld\n",cir_q.q[i].time.tv_sec);
 			// write data to buffer
-			buff_count += sprintf(&proc_buf[buff_count], "%s", filename);
+			buff_count += sprintf(&proc_buf[buff_count], "%s", cir_q.q[i].filename);
 			proc_buf[buff_count++] = ASCISPACE;
-			buff_count += sprintf(&proc_buf[buff_count], "%lu", sector_num);
+			buff_count += sprintf(&proc_buf[buff_count], "%lu", cir_q.q[i].sector_num);
 			proc_buf[buff_count++] = ASCISPACE;
-			buff_count += sprintf(&proc_buf[buff_count], "%ld", time);
+			buff_count += sprintf(&proc_buf[buff_count], "%ld", cir_q.q[i].time.tv_sec);
 			proc_buf[buff_count++] = ASCIENTER;
-		} 
+			//printk("%s",filename);
+		}
 		memset(&cir_q, 0, sizeof(struct io_cir_q));
 		cir_q.q_count = 0;
 	}
-	return count;
-}*/
+	return len;
+}
 
-/*
+
 static ssize_t my_read(struct file *f, char __user *userArray, size_t s, loff_t * l){
-		
-
-
-
-	if (s <= PROCSIZE){
+	printk("read\n");
+	//printk("%d\n",PROCSIZE);
+	printk("%s\n",proc_buf);
+	if (s >= PROCSIZE){
+	
 		memcpy(userArray, proc_buf, s);
 		return s;
-	}
-	else if (s > PROCSIZE){
-		printk("error : size of userArray is smaller than buffer\n");
+	}else{
+		printk("buffer is too small\n");
 		return -1;
 	}
-}*/
+}
 
-
+/*
 static ssize_t my_read(struct file *f, char __user *buffer, size_t len, loff_t *off){
 	int i = 0;
 	printk("read\n");
@@ -90,7 +97,7 @@ static ssize_t my_read(struct file *f, char __user *buffer, size_t len, loff_t *
 			buff_count += sprintf(&proc_buf + buff_count, "%s", filename);
 			buff_count += sprintf(&proc_buf + buff_count, "%lu", sector_num);
 			buff_count += sprintf(&proc_buf + buff_count, "%ld", time);
-		} 
+		}
 		memset(&cir_q, 0, sizeof(struct io_cir_q));
 		cir_q.q_count = 0;
 	}
@@ -104,28 +111,37 @@ static ssize_t my_read(struct file *f, char __user *buffer, size_t len, loff_t *
 		return -1;
 	}
 }
-
+*/
 
 //proc operations
 static const struct file_operations myproc_fops = {
 	.owner = THIS_MODULE,
 	.open = my_open,
-	.read = my_read
+	.read = my_read,
+	.write = my_write,
 };
 
 
 // run when init
 static int __init my_init(void)
 {
-	//index = PROCSIZE;
+	int time = 1;
 	memset(proc_buf, 0, sizeof(proc_buf));
 	q_boot = 1;
 	printk(KERN_INFO "init\n");
 	// when modules initiated, make dir and file
 	proc_dir = proc_mkdir(PROC_DIRNAME,NULL);
 	proc_file = proc_create(PROC_FILENAME, 0600, proc_dir, &myproc_fops);
-	
-	return 0;	
+
+	while(time < 10000000)
+	{
+		my_write(NULL,NULL,0,NULL);
+		udelay(1000);
+		time++;
+//		printk("%d",time);
+	}
+
+	return 0;
 }
 
 static void __exit my_exit(void)
