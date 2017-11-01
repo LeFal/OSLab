@@ -38,16 +38,23 @@ static int my_open(struct inode *inode, struct file *file)
 
 static ssize_t my_write(struct file *file, const char __user *user_buffer, size_t len, loff_t *off)
 {
-	printk(KERN_INFO "write\n");
+	//printk(KERN_INFO "write\n");
 	int i = 0;
-	if (len > 0)
+	if (len > 0){
+		printk("1");
 		return len;
-	if (buff_count > PROCSIZE-100)
+	}
+
+	if (buff_count > PROCSIZE-100){
+		printk("2");
 		return len;
+	}
+
 
 
 
 	if (cir_q.q_count == Q_SIZE) {
+		printk("3");
 
 		while (--cir_q.q_count){
 			if (i == Q_SIZE) {
