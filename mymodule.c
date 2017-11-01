@@ -49,7 +49,7 @@ static ssize_t my_write(struct file *file, const char __user *user_buffer, size_
 
 	if (cir_q.q_count == Q_SIZE) {
 
-		while (--cir_q.q_count) != 0{
+		while (--cir_q.q_count){
 			if (i == Q_SIZE) {
 				i = 0;
 			}
