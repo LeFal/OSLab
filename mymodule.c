@@ -35,7 +35,7 @@ static int my_open(struct inode *inode, struct file *file)
 	return 0;
 }
 
-
+/*
 static ssize_t my_write(struct file *file, const char __user *user_buffer, size_t len, loff_t *off)
 {
 	//printk(KERN_INFO "write\n");
@@ -81,8 +81,8 @@ static ssize_t my_read(struct file *f, char __user *userArray, size_t s, loff_t 
 		return -1;
 	}
 }
+*/
 
-/*
 static ssize_t my_read(struct file *f, char __user *buffer, size_t len, loff_t *off){
 	int i = 0;
 	printk("read\n");
@@ -110,14 +110,14 @@ static ssize_t my_read(struct file *f, char __user *buffer, size_t len, loff_t *
 		return -1;
 	}
 }
-*/
+
 
 //proc operations
 static const struct file_operations myproc_fops = {
 	.owner = THIS_MODULE,
 	.open = my_open,
 	.read = my_read,
-	.write = my_write,
+	// .write = my_write,
 };
 
 
@@ -132,13 +132,13 @@ static int __init my_init(void)
 	proc_dir = proc_mkdir(PROC_DIRNAME,NULL);
 	proc_file = proc_create(PROC_FILENAME, 0600, proc_dir, &myproc_fops);
 
-	while(time < 10000000)
-	{
-		my_write(NULL,NULL,0,NULL);
-		udelay(1000);
-		time++;
-//		printk("%d",time);
-	}
+// 	while(time < 10000000)
+// 	{
+// 		my_write(NULL,NULL,0,NULL);
+// 		udelay(1000);
+// 		time++;
+// //		printk("%d",time);
+// 	}
 
 	return 0;
 }
