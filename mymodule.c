@@ -41,7 +41,7 @@ static ssize_t my_write(struct file *file, const char __user *user_buffer, size_
 	printk(KERN_INFO "write\n");
 	int i = 0;
 	if (len > 0)
-		retrun len;
+		return len;
 	if (buff_count > PROCSIZE-100)
 		return len;
 
@@ -63,7 +63,6 @@ static ssize_t my_write(struct file *file, const char __user *user_buffer, size_
 		}
 		memset(&cir_q, 0, sizeof(struct io_cir_q));
 		}
-	}
 	printk("write end\n");
 	return len;
 }
