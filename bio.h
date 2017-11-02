@@ -107,15 +107,15 @@
 /*declearation for this module*/
 struct io_description {
 	const char *filename;
-	struct timespec time;
+	int time;
 	sector_t sector_num;
 };
 
 struct io_cir_q {
 	struct io_description q[Q_SIZE];
 	int q_count;
-	int fir_index;
-	int curr_index;
+	int front;
+	int rear;
 };
 
 

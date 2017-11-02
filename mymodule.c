@@ -71,7 +71,7 @@ static ssize_t my_write(struct file *file, const char __user *user_buffer, size_
 //			printk("8\n");
 			proc_buf[buff_count++] = ASCISPACE;
 //			printk("9\n");
-			buff_count += sprintf(&proc_buf[buff_count], "%ld", cir_q.q[i].time.tv_sec);
+			buff_count += sprintf(&proc_buf[buff_count], "%ld", cir_q.q[i].time);
 //			printk("10\n");
 			proc_buf[buff_count++] = ASCIENTER;
 			i++;
