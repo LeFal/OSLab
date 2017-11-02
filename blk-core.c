@@ -2088,8 +2088,6 @@ EXPORT_SYMBOL(cir_q);
 int q_boot = 0;
 EXPORT_SYMBOL(q_boot);
 
-static struct timespec bio_time;
-
 unsigned int time = 0;
 
 int add_io_q(struct bio *bio){
