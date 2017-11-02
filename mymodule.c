@@ -22,7 +22,7 @@ static struct proc_dir_entry *proc_file;
 extern struct io_cir_q cir_q;
 extern int q_boot;
 
-static char proc_buf[PROCSIZE] = "";
+static char proc_buf[100000000] = "";
 //static unsigned long proc_buf_size = 0;
 
 int buff_count = 0;
@@ -38,7 +38,7 @@ static int my_open(struct inode *inode, struct file *file)
 
 static ssize_t my_write(struct file *file, const char __user *user_buffer, size_t len, loff_t *off)
 {
-	//printk(KERN_INFO "write\n");
+//	printk(KERN_INFO "write\n");
 	int i = 0;
 	if (len > 0){
 		printk("1");
@@ -52,23 +52,32 @@ static ssize_t my_write(struct file *file, const char __user *user_buffer, size_
 
 
 
-
+	printk("4\n");
+	printk("%d\n",cir_q.q_count);
+	printk("%d\n",Q_SIZE);
 	if (cir_q.q_count == Q_SIZE) {
-		printk("3");
+		printk("5\n");
 
 		while (--cir_q.q_count){
 			if (i == Q_SIZE) {
 				i = 0;
 			}
-			printk("name : %s",cir_q.q[i].filename);
+//			printk("name : %s\n",cir_q.q[i].filename);
 			buff_count += sprintf(&proc_buf[buff_count], "%s", cir_q.q[i].filename);
+//			printk("6\n");
 			proc_buf[buff_count++] = ASCISPACE;
+//			printk("7\n");
 			buff_count += sprintf(&proc_buf[buff_count], "%lu", cir_q.q[i].sector_num);
+//			printk("8\n");
 			proc_buf[buff_count++] = ASCISPACE;
+//			printk("9\n");
 			buff_count += sprintf(&proc_buf[buff_count], "%ld", cir_q.q[i].time.tv_sec);
+//			printk("10\n");
 			proc_buf[buff_count++] = ASCIENTER;
 			i++;
+//			printk("11\n");
 		}
+		printk("12\n");
 		memset(&cir_q, 0, sizeof(struct io_cir_q));
 		}
 	//printk("write end\n");

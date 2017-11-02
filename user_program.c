@@ -4,7 +4,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define SIZE 1000
+#define SIZE 100000
 
 int main(void) {
 	int read_file = open("/proc/myproc/myproc", O_RDONLY);
