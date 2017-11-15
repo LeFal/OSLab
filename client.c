@@ -15,7 +15,8 @@ int *connection_handler(void *);
 int main(int argc, char *argv[]){
 
 	pthread_t thread_t[5];
-	struct sockaddr_in server_addr, client_addr;
+	struct sockaddr_in server_addr;
+	struct sockaddr_in client_addr;
 	int server_fd, client_fd[5];	
 	int port[5];
 
@@ -53,7 +54,7 @@ int *connection_handler(void *client_fd){
 
 	struct tm *tm_struct = localtime(time(NULL));
 
-	fprintf(file, "%d:%d:%d.%d <%d> <%s>\n", tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec
+	fprintf(file, "%d:%d:%d.%d <%d> <%s>\n", tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec,
 		strlen(buffer), buffer);
 	fclose(file);
 
