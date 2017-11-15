@@ -8,16 +8,15 @@
 #include <pthread.h>
 
 #define BUF_LEN 128
+char buffer[BUF_LEN];
 
 int *connection_handler(void *);
 
 int main(int argc, char *argv[]){
 
 	pthread_t thread_t[5];
-
-	char buffer[BUF_LEN];
 	struct sockaddr_in server_addr, client_addr;
-	int server_fd, client_fd;	
+	int server_fd, client_fd[5];	
 	int port[5];
 
 	printf("Type Server Ports(format : <Port1> <Port2> <Port3> <Port4> <Port5>");
@@ -60,5 +59,6 @@ int *connection_handler(void *client_fd){
 
 	close(client_fd);
 
+	return 0;
 }
 
