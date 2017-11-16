@@ -12,7 +12,7 @@
 char buffer[BUF_LEN];
 int port[5] = {4444,5555,6666,7777,8888};
 
-int connection_handler(void *);
+int connection_handler(int port);
 
 int main(){
 
@@ -37,7 +37,7 @@ int connection_handler(int port){
 	printf("connection handler called\n");	
 
 	struct sockaddr_in server_addr;
-	int client_fd
+	int client_fd;
 
 	memset(&server_addr, 0, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
@@ -56,7 +56,7 @@ int connection_handler(int port){
 	print("read : %s\n", buffer);
 
 	char filename[2];
-	filename[1] = '0';
+	filename[1] = port + '0';
 	filename[2] = ".txt";
 
 	FILE *file = fopen( *filename , "a");
