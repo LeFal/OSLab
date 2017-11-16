@@ -10,6 +10,7 @@
 
 #define BUF_LEN 128
 char buffer[BUF_LEN];
+int port[5] = {4444,5555,6666,7777,8888};
 
 int *connection_handler(void *);
 
@@ -18,26 +19,12 @@ int main(){
 	pthread_t thread_t[5];
 	struct sockaddr_in server_addr;
 	int client_fd[5];	
-	int port[5];
-
-	printf("Type Server Ports(format : <Port1> <Port2> <Port3> <Port4> <Port5>");
-	scanf("%d %d %d %d %d", &port[0], &port[1], &port[2], &port[3], &port[4]);
 
 	for (int i = 0; i < 5; i++){
 		printf("iteration : %dth\n", i);
-		memset(&server_addr, 0, sizeof(server_addr));
-		server_addr.sin_family = AF_INET;
-		server_addr.sin_port = htons(port[i]);
-		server_addr.sin_addr.s_addr = inet_addr("192.168.99.100");
+
 		
-		if ( (client_fd[i] = socket(AF_INET, SOCK_STREAM, 0)) == -1 ){
-			printf("creation failed\n");
-			exit(0);
-		}
-		if ( connect(client_fd[i], (struct sockaddr*)&server_addr, sizeof(server_addr)) == -1 ){
-			printf("connection failed\n");
-		}
-		if (pthread_create(&thread_t[i], NULL, connection_handler, (void*)&client_fd[i]) < 0){
+		if (pthread_create(&thread_t[i], NULL, connection_handler, port[i])){
 			perror("thread create error:");
 			exit(0);
 		}
@@ -47,10 +34,24 @@ int main(){
 	return 0;
 }
 
-int *connection_handler(void *client_fd){
+int *connection_handler(int port){
+	printf("connection handler called\n");	
 
-	printf("connection handler called\n");
+	memset(&server_addr, 0, sizeof(server_addr));
+	server_addr.sin_family = AF_INET;
+	server_addr.sin_port = htons(port);
+	server_addr.sin_addr.s_addr = inet_addr("192.168.99.100");
+	
+	if ( (client_fd[i] = socket(AF_INET, SOCK_STREAM, 0)) == -1 ){
+		printf("creation failed\n");
+		exit(0);
+	}
+	if ( connect(client_fd[i], (struct sockaddr*)&server_addr, sizeof(server_addr)) == -1 ){
+		printf("connection failed\n");
+	}
+
 	read(client_fd, buffer, BUF_LEN);
+	print("read : %s\n", buffer);
 
 	char filename[2];
 	filename[1] = '0';
