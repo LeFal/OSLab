@@ -33,7 +33,10 @@ int main(int argc, char *argv[]){
 		server_addr.sin_family = AF_INET;
 		server_addr.sin_port = htons(port[i]);
 		server_addr.sin_addr.s_addr = inet_addr();
-
+	
+		if ( -1 == connect(client_fd[i], (struct sockaddr*)&server_addr), sizeof(server_addr)){
+			printf("connection failed\n");
+		}
 		if (pthread_create(&thread_t[i], NULL, connection_handler, (void*)&client_fd[i]) < 0){
 			perror("thread create error:");
 			exit(0);
@@ -45,12 +48,10 @@ int main(int argc, char *argv[]){
 }
 
 int *connection_handler(void *client_fd){
-	if ( -1 == connect(client_fd, (struct sockaddr*)&server_addr), sizeof(server_addr)){
-		printf("connection failed\n");
-	}
+
 	read(client_fd, buffer, BUF_LEN);
 
-	FILE *file = fopen(server_addr.sin_port, "a");
+	FILE *file = fopen(client_fd.sin_port, "a");
 
 	struct tm *tm_struct = localtime(time(NULL));
 
