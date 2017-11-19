@@ -51,9 +51,19 @@ void connection_handler(int port){
 	}
 	if ( connect(client_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) == -1 ){
 		printf("connection failed\n");
+		exit(0);
 	}
 
-	read(client_fd, buffer, BUF_LEN);
+	if (send(client_fd, buffer, sizeof(buffer)) == -1){
+		printf("sending failed\n");
+		exit(0);
+	}
+
+	if (recv(client_fd, buffer, BUF_LEN, 0) == -1 ){
+		tcperror("receiving failed\n");
+		exit(0);
+	}
+	
 	printf("read : %s\n", buffer);
 
 	char filename[10];
