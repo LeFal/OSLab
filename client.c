@@ -12,13 +12,13 @@
 char buffer[BUF_LEN];
 int port[5] = {4444,5555,6666,7777,8888};
 
-int connection_handler(int port);
+void connection_handler(int port);
 
 int main(){
 
 	pthread_t thread_t[5];
 	int i = 0;
-	while (i > 1000){
+	while (i < 1000){
 		for (int i = 0; i < 5; i++){
 			printf("iteration : %dth\n", i);
 
@@ -34,7 +34,7 @@ int main(){
 	return 0;
 }
 
-int connection_handler(int port){
+void connection_handler(int port){
 	printf("connection handler called\n");	
 
 	struct sockaddr_in server_addr;
@@ -56,11 +56,11 @@ int connection_handler(int port){
 	read(client_fd, buffer, BUF_LEN);
 	printf("read : %s\n", buffer);
 
-	char filename;
-	filename = port + '0';
-	//filename[2] = ".txt";
+	char filename[10];
+	sprintf(filename, "%s", port);
+	sprintf(filename, ".txt");
 
-	FILE *file = fopen( "hi" , "a");
+	FILE *file = fopen( "hi" , "wb");
 
 	struct tm *tm_struct = localtime(time(NULL));
 
@@ -70,6 +70,6 @@ int connection_handler(int port){
 
 	close(client_fd);
 
-	return 0;
+	return;
 }
 
