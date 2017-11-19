@@ -49,18 +49,23 @@ void connection_handler(int port){
 		printf("creation failed\n");
 		exit(0);
 	}
+	printf("creation succeeded\n");
+
 	if ( connect(client_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0 ){
 		printf("connection failed\n");
 		exit(0);
 	}
+	printf("connection succeeded\n");
 
 	if ( write(client_fd, buffer, sizeof(buffer)) < 0 ){
 		printf("sending failed\n");
 		exit(0);
 	}
 
-	read(client_fd, buffer, 1024);
-	printf("read : %s\n", buffer);
+	if ( read(client_fd, buffer, 1024) > 0 )
+		printf("read : %s\n", buffer);
+	else 
+		printf("reading session failed \n");
 
 	char filename[10];
 	sprintf(filename, "%s", port);
