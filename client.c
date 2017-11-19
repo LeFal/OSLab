@@ -17,18 +17,19 @@ int connection_handler(int port);
 int main(){
 
 	pthread_t thread_t[5];
+	int i = 0;
+	while (i > 1000){
+		for (int i = 0; i < 5; i++){
+			printf("iteration : %dth\n", i);
 
-
-	for (int i = 0; i < 5; i++){
-		printf("iteration : %dth\n", i);
-
+			if (pthread_create(&thread_t[i], NULL, connection_handler, port[i])){
+				perror("thread create error:");
+				exit(0);
+			}
 		
-		if (pthread_create(&thread_t[i], NULL, connection_handler, port[i])){
-			perror("thread create error:");
-			exit(0);
+			usleep(500000); // wait for 5 seconds
 		}
-	
-		usleep(5000); // wait for 5 seconds
+		i = i + 1;
 	}
 	return 0;
 }
@@ -53,13 +54,13 @@ int connection_handler(int port){
 	}
 
 	read(client_fd, buffer, BUF_LEN);
-	print("read : %s\n", buffer);
+	printf("read : %s\n", buffer);
 
-	char filename[2];
-	filename[1] = port + '0';
-	filename[2] = ".txt";
+	char filename;
+	filename = port + '0';
+	//filename[2] = ".txt";
 
-	FILE *file = fopen( *filename , "a");
+	FILE *file = fopen( "hi" , "a");
 
 	struct tm *tm_struct = localtime(time(NULL));
 
