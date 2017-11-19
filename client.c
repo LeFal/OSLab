@@ -47,19 +47,19 @@ void connection_handler(int port){
 	
 	if ( (client_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0 ){
 		printf("creation failed\n");
-		exit(0);
+		exit(1);
 	}
 	printf("creation succeeded\n");
 
 	if ( connect(client_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0 ){
 		printf("connection failed\n");
-		exit(0);
+		exit(1);
 	}
 	printf("connection succeeded\n");
 
 	if ( write(client_fd, buffer, sizeof(buffer)) < 0 ){
 		printf("sending failed\n");
-		exit(0);
+		exit(1);
 	}
 
 	if ( read(client_fd, buffer, 1024) > 0 )
@@ -76,7 +76,7 @@ void connection_handler(int port){
 	fprintf(file, "%d:%d:%d.%d <%d> <%s>\n", tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec,
 		strlen(buffer), buffer);
 	fclose(file);
-
+	memset(&buffer, 0, sizeof(buffer));
 	close(client_fd);
 
 	return;
