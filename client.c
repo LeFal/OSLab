@@ -60,7 +60,7 @@ void connection_handler(int port){
 	sprintf(filename, "%s", port);
 	sprintf(filename, ".txt");
 
-	FILE *file = fopen( "hi" , "wb");
+	FILE *file = fopen( filename , "wb");
 
 	struct tm *tm_struct = localtime(time(NULL));
 
