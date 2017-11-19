@@ -45,25 +45,21 @@ void connection_handler(int port){
 	server_addr.sin_port = htons(port);
 	server_addr.sin_addr.s_addr = inet_addr("192.168.99.100");
 	
-	if ( (client_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1 ){
+	if ( (client_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0 ){
 		printf("creation failed\n");
 		exit(0);
 	}
-	if ( connect(client_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) == -1 ){
+	if ( connect(client_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0 ){
 		printf("connection failed\n");
 		exit(0);
 	}
 
-	if (send(client_fd, buffer, sizeof(buffer)) == -1){
+	if ( write(client_fd, buffer, sizeof(buffer)) < 0 ){
 		printf("sending failed\n");
 		exit(0);
 	}
 
-	if (recv(client_fd, buffer, BUF_LEN, 0) == -1 ){
-		tcperror("receiving failed\n");
-		exit(0);
-	}
-	
+	read(client_fd, buffer, 1024);
 	printf("read : %s\n", buffer);
 
 	char filename[10];
@@ -71,9 +67,7 @@ void connection_handler(int port){
 	sprintf(filename, ".txt");
 
 	FILE *file = fopen( filename , "wb");
-
 	struct tm *tm_struct = localtime(time(NULL));
-
 	fprintf(file, "%d:%d:%d.%d <%d> <%s>\n", tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec,
 		strlen(buffer), buffer);
 	fclose(file);
