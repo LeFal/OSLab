@@ -12,7 +12,7 @@
 char buffer[BUF_LEN];
 int port[5] = {4444,5555,6666,7777,8888};
 
-void connection_handler(int port);
+void *connection_handler(int port);
 
 int main(){
 
@@ -26,6 +26,7 @@ int main(){
 				perror("thread create error:");
 				exit(0);
 			}
+			pthread_detach(thread);
 		
 			usleep(500000); // wait for 5 seconds
 		}
@@ -45,6 +46,8 @@ void *connection_handler(int port){
 	server_addr.sin_port = htons(port);
 	server_addr.sin_addr.s_addr = inet_addr("192.168.99.100");
 	
+	printf("port : %d", port);
+
 	if ( (client_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0 ){
 		printf("creation failed\n");
 		exit(1);
@@ -57,22 +60,19 @@ void *connection_handler(int port){
 	}
 	printf("connection succeeded\n");
 
-	int read_len;
-	read_len = read(client_fd, buffer, 1024);
+	read(client_fd, buffer, BUF_LEN);
 	printf("read : %s\n", buffer);
-
+/*
 	char filename[10];
 	sprintf(filename, "%s", port);
 	sprintf(filename, ".txt");
-
+*/
 	FILE *file = fopen( filename , "wb");
 	struct tm *tm_struct = localtime(time(NULL));
 	fprintf(file, "%d:%d:%d.%d <%d> <%s>\n", tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec,
-		*read_len, buffer);
+		read_len, buffer);
 	fclose(file);
 	memset(&buffer, 0, sizeof(buffer));
 	close(client_fd);
-
-	return;
 }
 
