@@ -57,15 +57,15 @@ void *connection_handler(int port){
 	}
 	printf("connection succeeded\n");
 
-	FILE *file = fopen( "hi.txt" , "wb");
+	char filename[10];
+	sprintf(filename, "%d", port);
+	sprintf(filename, ".txt");
+	FILE *file = fopen( filename , "wb");
 	while(1){ 
 		read(client_fd, buffer, BUF_LEN);
 		printf("read : %s\n", buffer);
-	/*
-		char filename[10];
-		sprintf(filename, "%s", port);
-		sprintf(filename, ".txt");
-	*/
+
+
 		
 		struct tm *tm_struct = localtime(time(NULL));
 		fprintf(file, "%d:%d:%d.%d <%d> <%s>\n", tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec,
