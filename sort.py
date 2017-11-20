@@ -12,7 +12,7 @@ for i in range (len(arr)-1):
 
 print("bubble sort : %s" %arr)
 
-
+# insertion sort
 for i in range(1, len(arr)):
 	j = i -1
 	key = arr[i]
@@ -22,3 +22,25 @@ for i in range(1, len(arr)):
 	arr[j+1] = key
 
 print("insertion sort : %s" %arr)
+
+# selection sort
+for i in range(len(arr)):
+	j = i
+	min_index = i
+	for j in range(i+1, len(arr)):
+		if (arr[j] < arr[min_index]):
+			min_index = j
+	if (min_index != i):
+		temp = arr[min_index]
+		arr[min_index] = arr[i]
+		arr[i] = temp
+
+print("selection sort : %s" %arr)
+
+
+
+
+
+
+
+

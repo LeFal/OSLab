@@ -9,7 +9,7 @@
 #include <unistd.h>
 
 #define BUF_LEN 100000
-char buffer[BUF_LEN];
+
 int port[5] = {4444,5555,6666,7777,8888};
 
 void *connection_handler(int port);
@@ -18,7 +18,6 @@ int main(){
 
 	pthread_t thread_t[5];
 	int i = 0;
-	while (i < 1000){
 		for (int i = 0; i < 5; i++){
 			printf("iteration : %dth\n", i);
 
@@ -26,12 +25,10 @@ int main(){
 				perror("thread create error:");
 				exit(0);
 			}
-			pthread_detach(thread);
+			pthread_detach(thread_t[i]);
 		
-			usleep(500000); // wait for 5 seconds
+			usleep(5000); // wait for 5 seconds
 		}
-		i = i + 1;
-	}
 	return 0;
 }
 
@@ -40,7 +37,7 @@ void *connection_handler(int port){
 
 	struct sockaddr_in server_addr;
 	int client_fd;
-
+	char buffer[BUF_LEN];
 	memset(&server_addr, 0, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(port);
@@ -60,18 +57,21 @@ void *connection_handler(int port){
 	}
 	printf("connection succeeded\n");
 
-	read(client_fd, buffer, BUF_LEN);
-	printf("read : %s\n", buffer);
-/*
-	char filename[10];
-	sprintf(filename, "%s", port);
-	sprintf(filename, ".txt");
-*/
-	FILE *file = fopen( filename , "wb");
-	struct tm *tm_struct = localtime(time(NULL));
-	fprintf(file, "%d:%d:%d.%d <%d> <%s>\n", tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec,
-		read_len, buffer);
-	fclose(file);
+	FILE *file = fopen( "hi.txt" , "wb");
+	while(1){ 
+		read(client_fd, buffer, BUF_LEN);
+		printf("read : %s\n", buffer);
+	/*
+		char filename[10];
+		sprintf(filename, "%s", port);
+		sprintf(filename, ".txt");
+	*/
+		
+		struct tm *tm_struct = localtime(time(NULL));
+		fprintf(file, "%d:%d:%d.%d <%d> <%s>\n", tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec,
+			strlen(buffer), buffer);
+	}
+	fclose(file);	
 	memset(&buffer, 0, sizeof(buffer));
 	close(client_fd);
 }
