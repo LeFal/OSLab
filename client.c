@@ -64,12 +64,11 @@ void *connection_handler(int port){
 	while(1){ 
 		read(client_fd, buffer, BUF_LEN);
 		printf("read : %s\n", buffer);
-
-
 		
 		struct tm *tm_struct = localtime(time(NULL));
-		fprintf(file, "%d:%d:%d.%d <%d> <%s>\n", tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec,
+		fprintf(file, "%d:%d:%d <%d> <%s>\n", tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec,
 			strlen(buffer), buffer);
+		fprintf(file, "hi\n");
 	}
 	fclose(file);	
 	memset(&buffer, 0, sizeof(buffer));
