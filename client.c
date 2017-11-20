@@ -7,7 +7,6 @@
 #include <netinet/in.h>
 #include <pthread.h>
 #include <unistd.h>
-
 #define BUF_LEN 100000
 
 int port[5] = {4444,5555,6666,7777,8888};
@@ -34,6 +33,7 @@ int main(){
 
 void *connection_handler(int port){
 	printf("connection handler called\n");	
+
 
 	struct sockaddr_in server_addr;
 	int client_fd;
@@ -65,10 +65,12 @@ void *connection_handler(int port){
 		read(client_fd, buffer, BUF_LEN);
 		printf("read : %s\n", buffer);
 		
-		struct tm *tm_struct = localtime(time(NULL));
+		time_t timer;
+		time(&timer)
+		struct tm *tm = localtime(&timer);
+
 		fprintf(file, "%d:%d:%d <%d> <%s>\n", tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec,
 			strlen(buffer), buffer);
-		fprintf(file, "hi\n");
 	}
 	fclose(file);	
 	memset(&buffer, 0, sizeof(buffer));
