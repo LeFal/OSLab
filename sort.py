@@ -39,6 +39,15 @@ print("selection sort : %s" %arr)
 
 
 
+# merge sort
+def merge_sort(array, left, right):
+	if (left != right):
+		mid = (right + left)/2
+		merge_sort(array[:mid], 0, mid)
+		merge_sort(array[mid+1:])
+
+
+
 
 
 
