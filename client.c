@@ -8,7 +8,7 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#define BUF_LEN 128
+#define BUF_LEN 100000
 char buffer[BUF_LEN];
 int port[5] = {4444,5555,6666,7777,8888};
 
@@ -34,7 +34,7 @@ int main(){
 	return 0;
 }
 
-void connection_handler(int port){
+void *connection_handler(int port){
 	printf("connection handler called\n");	
 
 	struct sockaddr_in server_addr;
@@ -57,15 +57,9 @@ void connection_handler(int port){
 	}
 	printf("connection succeeded\n");
 
-	if ( write(client_fd, buffer, sizeof(buffer)) < 0 ){
-		printf("sending failed\n");
-		exit(1);
-	}
-
-	if ( read(client_fd, buffer, 1024) > 0 )
-		printf("read : %s\n", buffer);
-	else 
-		printf("reading session failed \n");
+	int read_len;
+	read_len = read(client_fd, buffer, 1024);
+	printf("read : %s\n", buffer);
 
 	char filename[10];
 	sprintf(filename, "%s", port);
@@ -74,7 +68,7 @@ void connection_handler(int port){
 	FILE *file = fopen( filename , "wb");
 	struct tm *tm_struct = localtime(time(NULL));
 	fprintf(file, "%d:%d:%d.%d <%d> <%s>\n", tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec,
-		strlen(buffer), buffer);
+		*read_len, buffer);
 	fclose(file);
 	memset(&buffer, 0, sizeof(buffer));
 	close(client_fd);
