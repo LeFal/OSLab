@@ -12,6 +12,17 @@
 #include <linux/ip.h>
 #include <linux/tcp.h>
 
+// Tool: Integer IP to Char Array (for print)
+static char convert_to_ip(int ip)
+{
+    static unsigned char bytes[4];
+    bytes[0] = ip & 0xFF;
+    bytes[1] = (ip >> 8) & 0xFF;
+    bytes[2] = (ip >> 16) & 0xFF;
+    bytes[3] = (ip >> 24) & 0xFF;   
+	return bytes;
+}
+
 static unsigned int my_hook_fn_pre_routing(void *priv,
 							   struct sk_buff *skb,
 							   const struct nf_hook_state *state
@@ -80,16 +91,6 @@ static unsigned int my_hook_fn_post_routing(void *priv,
     	protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
 }
 
-// Tool: Integer IP to Char Array (for print)
-static char convert_to_ip(int ip)
-{
-    static unsigned char bytes[4];
-    bytes[0] = ip & 0xFF;
-    bytes[1] = (ip >> 8) & 0xFF;
-    bytes[2] = (ip >> 16) & 0xFF;
-    bytes[3] = (ip >> 24) & 0xFF;   
-	return bytes;
-}
 
 
 // 문제 상황 : hook operation 구조체는 하나만 있어야 한다고 생각해서 어떻게 3개를 넣을지 몰라서 약간 고생했음
