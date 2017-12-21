@@ -12,10 +12,12 @@
 #include <linux/ip.h>
 #include <linux/tcp.h>
 
+
+
 // Tool: Integer IP to Char Array (for print)
 static char convert_to_ip(int ip)
 {
-    static unsigned char bytes[4];
+    static unsigned int bytes[4];
     bytes[0] = ip & 0xFF;
     bytes[1] = (ip >> 8) & 0xFF;
     bytes[2] = (ip >> 16) & 0xFF;
@@ -90,6 +92,7 @@ static unsigned int my_hook_fn_post_routing(void *priv,
     printk("POST_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d",
     	protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
 }
+
 
 
 
