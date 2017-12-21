@@ -23,8 +23,8 @@ static unsigned int my_hook_fn_pre_routing(void *priv,
 	char protocol = ih->protocol; // protocol
 	long Sport = ntohs(th->source); // Sport
 	long Dport = ntohs(th->dest); // Dport
-	char *SIP = convert_ip(ih->saddr); // Source IP
-	char *DIP = convert_ip(ih->daddr); // Destination IP
+	char *SIP = convert_to_ip(ih->saddr); // Source IP
+	char *DIP = convert_to_ip(ih->daddr); // Destination IP
 
     printk("PRE_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d",
    		protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
@@ -55,8 +55,8 @@ static unsigned int my_hook_fn_forward(void *priv,
 	char protocol = ih->protocol; // protocol
 	long Sport = ntohs(th->source); // Sport
 	long Dport = ntohs(th->dest); // Dport
-	char *SIP = convert_ip(ih->saddr); // Source IP
-	char *DIP = convert_ip(ih->daddr); // Destination IP
+	char *SIP = convert_to_ip(ih->saddr); // Source IP
+	char *DIP = convert_to_ip(ih->daddr); // Destination IP
 
     printk("FORWARD packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d",
     	protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
@@ -73,15 +73,15 @@ static unsigned int my_hook_fn_post_routing(void *priv,
 	char protocol = ih->protocol; // protocol
 	long Sport = ntohs(th->source); // Sport
 	long Dport = ntohs(th->dest); // Dport
-	char *SIP = convert_ip(ih->saddr); // Source IP
-	char *DIP = convert_ip(ih->daddr); // Destination IP
+	char *SIP = convert_to_ip(ih->saddr); // Source IP
+	char *DIP = convert_to_ip(ih->daddr); // Destination IP
 
     printk("POST_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d",
     	protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
 }
 
 // Tool: Integer IP to Char Array (for print)
-char convert_ip(int ip)
+char convert_to_ip(int ip)
 {
     static unsigned char bytes[4];
     bytes[0] = ip & 0xFF;
@@ -93,21 +93,21 @@ char convert_ip(int ip)
 
 
 // 문제 상황 : hook operation 구조체는 하나만 있어야 한다고 생각해서 어떻게 3개를 넣을지 몰라서 약간 고생했음
-static  struct nf_hook_ops my_nf_ops_pre_routing {
+static struct nf_hook_ops my_nf_ops_pre_routing = {
 	.hook = my_hook_fn,
 	.pf = PF_INET,
 	.hooknum = NF_INET_PRE_ROUTING,
 	.priority = NF_IP_PRI_FIRST
 };
 
-static  struct nf_hook_ops my_nf_ops_forward {
+static struct nf_hook_ops my_nf_ops_forward = {
 	.hook = my_hook_fn,
 	.pf = PF_INET,
 	.hooknum = NF_INET_FORWARD,
 	.priority = NF_IP_PRI_FIRST
 };
 
-static  struct nf_hook_ops my_nf_ops_post_routing {
+static  struct nf_hook_ops my_nf_ops_post_routing = {
 	.hook = my_hook_fn,
 	.pf = PF_INET,
 	.hooknum = NF_INET_POST_ROUTING,
