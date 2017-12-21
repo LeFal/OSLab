@@ -17,7 +17,7 @@
 // Tool: Integer IP to Char Array (for print)
 static char convert_to_ip(int ip)
 {
-    static unsigned int bytes[4];
+    static unsigned char bytes[4];
     bytes[0] = ip & 0xFF;
     bytes[1] = (ip >> 8) & 0xFF;
     bytes[2] = (ip >> 16) & 0xFF;
@@ -30,8 +30,10 @@ static unsigned int my_hook_fn_pre_routing(void *priv,
 							   const struct nf_hook_state *state
 								){
 	/* 후킹함수 작성 */
+		printk(KERN_INFO "a\n");
 	struct iphdr *ih = ip_hdr(skb);
 	struct tcphdr *th = tcp_hdr(skb);
+		printk(KERN_INFO "b\n");
 
 	unsigned char protocol = ih->protocol; // protocol
 	unsigned short Sport = ntohs(th->source); // Sport
@@ -124,7 +126,9 @@ static int __init my_init(void)
 {
 	printk(KERN_INFO "init\n");
 	nf_register_hook(&my_hook_fn_pre_routing);
+	printk(KERN_INFO "init1\n");
 	nf_register_hook(&my_hook_fn_forward);
+	printk(KERN_INFO "init2\n");
 	nf_register_hook(&my_hook_fn_post_routing);
 	return 0;
 }
