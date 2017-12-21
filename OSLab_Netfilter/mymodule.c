@@ -38,10 +38,8 @@ static unsigned int my_hook_fn_pre_routing(void *priv,
         th->dest = htons(7777);
 
         // Packet Forwarding (Change destination of packet)
-        //ih->daddr = 
-
         return NF_ACCEPT;
-    } 
+    }
 
     return NF_ACCEPT;
 }
@@ -72,6 +70,7 @@ static unsigned int my_hook_fn_post_routing(void *priv,
 	struct iphdr *ih = ip_hdr(skb);
 	struct tcphdr *th = tcp_hdr(skb);
 
+	char protocol = ih->protocol; // protocol
 	long Sport = ntohs(th->source); // Sport
 	long Dport = ntohs(th->dest); // Dport
 	char *SIP = convert_ip(ih->saddr); // Source IP
@@ -120,18 +119,18 @@ static const struct nf_hook_ops my_nf_ops_post_routing {
 static int __init my_init(void)
 {
 	printk(KERN_INFO "init\n");
-	nf_register_hook(&my_nf_ops_pre_routing);
-	nf_register_hook(&my_nf_ops_forward);
-	nf_register_hook(&my_nf_ops_post_routing);
+	nf_register_hook(&my_hook_fn_pre_routing);
+	nf_register_hook(&my_hook_fn_forward);
+	nf_register_hook(&my_hook_fn_post_routing);
 	return 0;
 }
 
 static void __exit my_exit(void)
 {
 	printk(KERN_INFO "exit\n");
-	nf_unregister_hook(&my_nf_ops_pre_routing);
-	nf_unregister_hook(&my_nf_ops_forward);
-	nf_unregister_hook(&my_nf_ops_post_routing);
+	nf_unregister_hook(&my_hook_fn_pre_routing);
+	nf_unregister_hook(&my_hook_fn_forward);
+	nf_unregister_hook(&my_hook_fn_post_routing);
 	return;
 }
 
