@@ -38,8 +38,6 @@ static unsigned int my_hook_fn_pre_routing(void *priv,
         th->dest = htons(7777);
 
         // Packet Forwarding (Change destination of packet)
-        // ih->daddr = 
-
         return NF_ACCEPT;
     }
 
