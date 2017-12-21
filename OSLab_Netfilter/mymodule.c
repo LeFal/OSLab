@@ -40,10 +40,10 @@ static unsigned int my_hook_fn_pre_routing(void *priv,
 	unsigned short Dport = ntohs(th->dest); // Dport
 	unsigned char *SIP = convert_to_ip(ih->saddr); // Source IP
 	unsigned char *DIP = convert_to_ip(ih->daddr); // Destination IP
-
+		printk(KERN_INFO "c\n");
     printk("PRE_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d",
    		protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
-
+		printk(KERN_INFO "d\n");
 	//서버의 33333 포트에서 온 패킷을 Forwarding 대상으로 지정
     if (Sport == 33333) {
 
@@ -124,12 +124,9 @@ static  struct nf_hook_ops my_nf_ops_post_routing = {
 // run when init
 static int __init my_init(void)
 {
-	printk(KERN_INFO "init\n");
-	nf_register_hook(&my_hook_fn_pre_routing);
-	printk(KERN_INFO "init1\n");
-	nf_register_hook(&my_hook_fn_forward);
-	printk(KERN_INFO "init2\n");
-	nf_register_hook(&my_hook_fn_post_routing);
+	nf_register_hook(&my_nf_ops_pre_routing);
+	nf_register_hook(&my_nf_ops_forward);
+	nf_register_hook(&my_nf_ops_post_routing);
 	return 0;
 }
 
