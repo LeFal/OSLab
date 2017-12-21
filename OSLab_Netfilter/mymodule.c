@@ -81,7 +81,7 @@ static unsigned int my_hook_fn_post_routing(void *priv,
 }
 
 // Tool: Integer IP to Char Array (for print)
-char convert_to_ip(int ip)
+static char convert_to_ip(int ip)
 {
     static unsigned char bytes[4];
     bytes[0] = ip & 0xFF;
@@ -94,21 +94,21 @@ char convert_to_ip(int ip)
 
 // 문제 상황 : hook operation 구조체는 하나만 있어야 한다고 생각해서 어떻게 3개를 넣을지 몰라서 약간 고생했음
 static struct nf_hook_ops my_nf_ops_pre_routing = {
-	.hook = my_hook_fn,
+	.hook = my_hook_fn_pre_routing,
 	.pf = PF_INET,
 	.hooknum = NF_INET_PRE_ROUTING,
 	.priority = NF_IP_PRI_FIRST
 };
 
 static struct nf_hook_ops my_nf_ops_forward = {
-	.hook = my_hook_fn,
+	.hook = my_hook_fn_forward,
 	.pf = PF_INET,
 	.hooknum = NF_INET_FORWARD,
 	.priority = NF_IP_PRI_FIRST
 };
 
 static  struct nf_hook_ops my_nf_ops_post_routing = {
-	.hook = my_hook_fn,
+	.hook = my_hook_fn_post_routing,
 	.pf = PF_INET,
 	.hooknum = NF_INET_POST_ROUTING,
 	.priority = NF_IP_PRI_FIRST
