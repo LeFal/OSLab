@@ -33,11 +33,11 @@ static unsigned int my_hook_fn_pre_routing(void *priv,
 	struct iphdr *ih = ip_hdr(skb);
 	struct tcphdr *th = tcp_hdr(skb);
 
-	char protocol = ih->protocol; // protocol
-	long Sport = ntohs(th->source); // Sport
-	long Dport = ntohs(th->dest); // Dport
-	char *SIP = convert_to_ip(ih->saddr); // Source IP
-	char *DIP = convert_to_ip(ih->daddr); // Destination IP
+	unsigned char protocol = ih->protocol; // protocol
+	unsigned short Sport = ntohs(th->source); // Sport
+	unsigned short Dport = ntohs(th->dest); // Dport
+	unsigned char *SIP = convert_to_ip(ih->saddr); // Source IP
+	unsigned char *DIP = convert_to_ip(ih->daddr); // Destination IP
 
     printk("PRE_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d",
    		protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
@@ -65,11 +65,11 @@ static unsigned int my_hook_fn_forward(void *priv,
 	struct iphdr *ih = ip_hdr(skb);
 	struct tcphdr *th = tcp_hdr(skb);
 
-	char protocol = ih->protocol; // protocol
-	long Sport = ntohs(th->source); // Sport
-	long Dport = ntohs(th->dest); // Dport
-	char *SIP = convert_to_ip(ih->saddr); // Source IP
-	char *DIP = convert_to_ip(ih->daddr); // Destination IP
+	unsigned char protocol = ih->protocol; // protocol
+	unsigned short Sport = ntohs(th->source); // Sport
+	unsigned short Dport = ntohs(th->dest); // Dport
+	unsigned char *SIP = convert_to_ip(ih->saddr); // Source IP
+	unsigned char *DIP = convert_to_ip(ih->daddr); // Destination IP
 
     printk("FORWARD packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d",
     	protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
@@ -83,11 +83,11 @@ static unsigned int my_hook_fn_post_routing(void *priv,
 	struct iphdr *ih = ip_hdr(skb);
 	struct tcphdr *th = tcp_hdr(skb);
 
-	char protocol = ih->protocol; // protocol
-	long Sport = ntohs(th->source); // Sport
-	long Dport = ntohs(th->dest); // Dport
-	char *SIP = convert_to_ip(ih->saddr); // Source IP
-	char *DIP = convert_to_ip(ih->daddr); // Destination IP
+	unsigned char protocol = ih->protocol; // protocol
+	unsigned short Sport = ntohs(th->source); // Sport
+	unsigned short Dport = ntohs(th->dest); // Dport
+	unsigned char *SIP = convert_to_ip(ih->saddr); // Source IP
+	unsigned char *DIP = convert_to_ip(ih->daddr); // Destination IP
 
     printk("POST_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d",
     	protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
