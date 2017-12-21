@@ -30,7 +30,7 @@ static unsigned int my_hook_fn_pre_routing(void *priv,
    		protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
 
 	//서버의 33333 포트에서 온 패킷을 Forwarding 대상으로 지정
-    if Sport == 33333 {
+    if (Sport == 33333) {
 
     	// change Port to 7777
     	// 문제상황 htons, ntohs의 사용법을 몰라 결과가 정상적으로 나오지 않았음. 
@@ -95,21 +95,21 @@ char convert_ip(int ip)
 
 
 // 문제 상황 : hook operation 구조체는 하나만 있어야 한다고 생각해서 어떻게 3개를 넣을지 몰라서 약간 고생했음
-static const struct nf_hook_ops my_nf_ops_pre_routing {
+static  struct nf_hook_ops my_nf_ops_pre_routing {
 	.hook = my_hook_fn,
 	.pf = PF_INET,
 	.hooknum = NF_INET_PRE_ROUTING,
 	.priority = NF_IP_PRI_FIRST
 };
 
-static const struct nf_hook_ops my_nf_ops_forward {
+static  struct nf_hook_ops my_nf_ops_forward {
 	.hook = my_hook_fn,
 	.pf = PF_INET,
 	.hooknum = NF_INET_FORWARD,
 	.priority = NF_IP_PRI_FIRST
 };
 
-static const struct nf_hook_ops my_nf_ops_post_routing {
+static  struct nf_hook_ops my_nf_ops_post_routing {
 	.hook = my_hook_fn,
 	.pf = PF_INET,
 	.hooknum = NF_INET_POST_ROUTING,
