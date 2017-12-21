@@ -15,7 +15,7 @@
 
 
 // Tool: Integer IP to Char Array (for print)
-static char convert_to_ip(int ip)
+static char* convert_to_ip(int ip)
 {
     static unsigned char bytes[4];
     bytes[0] = ip & 0xFF;
