@@ -13,17 +13,19 @@
 #include <linux/tcp.h>
 
 
+unsigned char* SIP;
+unsigned char* DIP; 
 
 // Tool: Integer IP to Char Array (for print)
-static char* convert_to_ip(int ip)
+void convert_to_ip(char* global ,int ip)
 {
-    unsigned char bytes[4];
-    bytes[0] = ip & 0xFF;
-    bytes[1] = (ip >> 8) & 0xFF;
-    bytes[2] = (ip >> 16) & 0xFF;
-    printk("%d\n"bytes[2]);
-    bytes[3] = (ip >> 24) & 0xFF;   
-	return bytes;
+    static unsigned char bytes[4];
+    global[0] = ip & 0xFF;
+    global[1] = (ip >> 8) & 0xFF;
+    global[2] = (ip >> 16) & 0xFF;
+    global[3] = (ip >> 24) & 0xFF; 
+	//printk("%d.%d.%d.%d\n",bytes[0],bytes[1],bytes[2],bytes[3]);
+	return;
 }
 
 static unsigned int my_hook_fn_pre_routing(void *priv,
@@ -37,8 +39,8 @@ static unsigned int my_hook_fn_pre_routing(void *priv,
 	unsigned char protocol = ih->protocol; // protocol
 	unsigned short Sport = ntohs(th->source); // Sport
 	unsigned short Dport = ntohs(th->dest); // Dport
-	unsigned char *SIP = convert_to_ip(ih->saddr); // Source IP
-	unsigned char *DIP = convert_to_ip(ih->daddr); // Destination IP
+	convert_to_ip(SIP,ih->saddr); // Source IP
+	convert_to_ip(SIP,ih->daddr); // Destination IP
 
 
 	printk("PRE_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d\n",
@@ -56,13 +58,13 @@ static unsigned int my_hook_fn_pre_routing(void *priv,
 		printk("%d\n",ih->daddr);
 		printk("%d\n",ih->saddr);
 
-        unsigned char SIP2[4] = convert_to_ip(ih->saddr); // Source IP
-        unsigned char DIP2[4] = convert_to_ip(ih->daddr); // Destination IP
+        convert_to_ip(SIP,ih->saddr); // Source IP
+        convert_to_ip(DIP,ih->daddr); // Destination IP
 
         printk("CHANGED SIP: %d.%d.%d.%d\n", SIP2[0],SIP2[1],SIP2[2],SIP2[3]);
         printk("CHANGED DIP: %d.%d.%d.%d\n", DIP2[0],DIP2[1],DIP2[2],DIP2[3]);
 
-		printk("%d\n",ih->daddr);
+	printk("%d\n",ih->daddr);
         printk("%d\n",ih->saddr);
 
 	printk("CHANGED PRE_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d\n",
