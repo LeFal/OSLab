@@ -13,19 +13,13 @@
 #include <linux/tcp.h>
 
 
-unsigned char* SIP;
-unsigned char* DIP; 
+unsigned char sip[4];
+unsigned char dip[4];
 
-// Tool: Integer IP to Char Array (for print)
-void convert_to_ip(char* global ,int ip)
-{
-    static unsigned char bytes[4];
-    global[0] = ip & 0xFF;
-    global[1] = (ip >> 8) & 0xFF;
-    global[2] = (ip >> 16) & 0xFF;
-    global[3] = (ip >> 24) & 0xFF; 
-	return;
-}
+#define convert_ip(ip, bytes)  bytes[0] = ip & 0xFF;\
+                            bytes[1] = (ip >> 8) & 0xFF;\
+                            bytes[2] = (ip >> 16) & 0xFF;\
+                            bytes[3] = (ip >> 24) & 0xFF;  
 
 static unsigned int my_hook_fn_pre_routing(void *priv,
 							   struct sk_buff *skb,
@@ -38,8 +32,8 @@ static unsigned int my_hook_fn_pre_routing(void *priv,
 	unsigned char protocol = ih->protocol; // protocol
 	unsigned short Sport = ntohs(th->source); // Sport
 	unsigned short Dport = ntohs(th->dest); // Dport
-	convert_to_ip(SIP,ih->saddr); // Source IP
-	convert_to_ip(DIP,ih->daddr); // Destination IP
+	convert_ip(ih->saddr,sip); // Source IP
+	convert_ip(ih->daddr,dip); // Destination IP
 
 
 	printk("PRE_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d\n",
@@ -53,23 +47,6 @@ static unsigned int my_hook_fn_pre_routing(void *priv,
         th->dest = htons((unsigned short)7777);
 		ih->daddr = htonl((unsigned long)3232261120); //192.168.1.0
     
-        // Packet Forwarding (Change destination of packet)
-		printk("%d\n",ih->daddr);
-		printk("%d\n",ih->saddr);
-
-        convert_to_ip(SIP,ih->saddr); // Source IP
-        convert_to_ip(DIP,ih->daddr); // Destination IP
-
-        printk("CHANGED SIP: %d.%d.%d.%d\n", SIP2[0],SIP2[1],SIP2[2],SIP2[3]);
-        printk("CHANGED DIP: %d.%d.%d.%d\n", DIP2[0],DIP2[1],DIP2[2],DIP2[3]);
-
-	printk("%d\n",ih->daddr);
-        printk("%d\n",ih->saddr);
-
-	printk("CHANGED PRE_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d\n",
-protocol, Sport, Dport,SIP2[0],SIP2[1],SIP2[2],SIP2[3],DIP2[0],DIP2[1],DIP2[2],DIP2[3]);
-
-
 	return NF_ACCEPT;
     }
 
@@ -87,8 +64,8 @@ static unsigned int my_hook_fn_forward(void *priv,
 	unsigned char protocol = ih->protocol; // protocol
 	unsigned short Sport = ntohs(th->source); // Sport
 	unsigned short Dport = ntohs(th->dest); // Dport
-	convert_to_ip(SIP,ih->saddr); // Source IP
-	convert_to_ip(DIP,ih->daddr); // Destination IP
+	convert_ip(ih->saddr,sip); // Source IP
+	convert_ip(ih->daddr,dip); // Destination IP
 
     printk("FORWARD packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d\n",
     	protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
@@ -107,8 +84,8 @@ static unsigned int my_hook_fn_post_routing(void *priv,
 	unsigned char protocol = ih->protocol; // protocol
 	unsigned short Sport = ntohs(th->source); // Sport
 	unsigned short Dport = ntohs(th->dest); // Dport
-	convert_to_ip(SIP,ih->saddr); // Source IP
-	convert_to_ip(DIP,ih->daddr); // Destination IP
+	convert_ip(ih->saddr,sip); // Source IP
+	convert_ip(ih->daddr,dip); // Destination IP
 
     printk("POST_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d\n",
     	protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
