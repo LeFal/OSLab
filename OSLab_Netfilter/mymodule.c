@@ -75,6 +75,8 @@ static unsigned int my_hook_fn_forward(void *priv,
 
     printk("FORWARD packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d",
     	protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
+
+    return NF_ACCEPT;
 }
 
 // 
@@ -93,6 +95,8 @@ static unsigned int my_hook_fn_post_routing(void *priv,
 
     printk("POST_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d",
     	protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
+
+    return NF_ACCEPT;
 }
 
 
@@ -122,6 +126,7 @@ static  struct nf_hook_ops my_nf_ops_post_routing = {
 
 
 // run when init
+// 문제 : nf_register_hook 파라미터로 struct 을 집어넣지 않고, 함수명을 집어 넣어 디버깅하는데 고생함
 static int __init my_init(void)
 {
 	nf_register_hook(&my_nf_ops_pre_routing);
@@ -129,6 +134,7 @@ static int __init my_init(void)
 	nf_register_hook(&my_nf_ops_post_routing);
 	return 0;
 }
+
 
 static void __exit my_exit(void)
 {
