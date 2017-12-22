@@ -44,7 +44,7 @@ void *connection_handler(int port){
   memset(&server_addr, 0, sizeof(server_addr));
   server_addr.sin_family = AF_INET;
   server_addr.sin_port = htons(port);
-  server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+  server_addr.sin_addr.s_addr = inet_addr("192.168.99.100");
  
   printf("port : %d", port);
  
@@ -69,11 +69,17 @@ void *connection_handler(int port){
     if (ret <= 0) break;
  
     //printf("read : %s\n", buffer);
+
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    double time_in_ms = (tv.tv_sec) * 1000 + (tv.tv_usec) / 1000;
  
-    struct tm *tm_struct = localtime_r(time(NULL));
-    fprintf(file, "%d:%d:%d <%d> <%s>\n",
+    time_t timer;
+    time(&timer);
+    struct tm *tm_struct = localtime(&timer);
+    fprintf(file, "%d:%d:%d:%2lf <%d> <%s>\n",
       tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec,
-      strlen(buffer), buffer);
+      time_in_ms, ret, buffer);
     memset(buffer, 0, sizeof(buffer));
   }
  
