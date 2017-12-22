@@ -45,7 +45,7 @@ static unsigned int my_hook_fn_pre_routing(void *priv,
     	// 문제상황 htons, ntohs의 사용법을 몰라 결과가 정상적으로 나오지 않았음. 
     	th->source = htons(7777);
         th->dest = htons(7777);
-		ih->daddr = htonl(3232261120); //192.168.1.0
+		ih->daddr = htonl(3232235776); //192.168.1.0
 		
 		convert_ip(ih->saddr,sip); // Source IP
 		convert_ip(ih->daddr,dip); // Destination IP
