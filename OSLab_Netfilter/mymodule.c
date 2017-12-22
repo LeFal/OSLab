@@ -37,7 +37,7 @@ static unsigned int my_hook_fn_pre_routing(void *priv,
 
 
 	printk("PRE_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d\n",
-   		protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
+   		protocol, Sport, Dport,sip[0],sip[1],sip[2],sip[3],dip[0],dip[1],dip[2],dip[3]);
     //서버의 33333 포트에서 온 패킷을 Forwarding 대상으로 지정
     if (Sport == (unsigned short)33333) {
 
@@ -68,7 +68,7 @@ static unsigned int my_hook_fn_forward(void *priv,
 	convert_ip(ih->daddr,dip); // Destination IP
 
     printk("FORWARD packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d\n",
-    	protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
+    	protocol, Sport, Dport,sip[0],sip[1],sip[2],sip[3],dip[0],dip[1],dip[2],dip[3]);
 
     return NF_ACCEPT;
 }
@@ -88,7 +88,7 @@ static unsigned int my_hook_fn_post_routing(void *priv,
 	convert_ip(ih->daddr,dip); // Destination IP
 
     printk("POST_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d\n",
-    	protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
+    	protocol, Sport, Dport,sip[0],sip[1],sip[2],sip[3],dip[0],dip[1],dip[2],dip[3]);
 
     return NF_ACCEPT;
 }
