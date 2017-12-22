@@ -39,13 +39,19 @@ static unsigned int my_hook_fn_pre_routing(void *priv,
 	printk("PRE_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d\n",
    		protocol, Sport, Dport,sip[0],sip[1],sip[2],sip[3],dip[0],dip[1],dip[2],dip[3]);
     //서버의 33333 포트에서 온 패킷을 Forwarding 대상으로 지정
-    if (Sport == (unsigned short)33333) {
+    if (Sport == 33333) {
 
     	// change Port to 7777
     	// 문제상황 htons, ntohs의 사용법을 몰라 결과가 정상적으로 나오지 않았음. 
-    	th->source = htons((unsigned short)7777);
-        th->dest = htons((unsigned short)7777);
-		ih->daddr = htonl((unsigned long)3232261120); //192.168.1.0
+    	th->source = htons(7777);
+        th->dest = htons(7777);
+		ih->daddr = htonl(3232261120); //192.168.1.0
+		
+		convert_ip(ih->saddr,sip); // Source IP
+		convert_ip(ih->daddr,dip); // Destination IP
+
+		printk("CHANGED PRE_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d\n",
+   		protocol, Sport, Dport,sip[0],sip[1],sip[2],sip[3],dip[0],dip[1],dip[2],dip[3]);
     
 	return NF_ACCEPT;
     }
