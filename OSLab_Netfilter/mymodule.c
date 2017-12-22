@@ -17,10 +17,11 @@
 // Tool: Integer IP to Char Array (for print)
 static char* convert_to_ip(int ip)
 {
-    static unsigned char bytes[4];
+    unsigned char bytes[4];
     bytes[0] = ip & 0xFF;
     bytes[1] = (ip >> 8) & 0xFF;
     bytes[2] = (ip >> 16) & 0xFF;
+    printk("%d\n"bytes[2]);
     bytes[3] = (ip >> 24) & 0xFF;   
 	return bytes;
 }
@@ -49,21 +50,19 @@ static unsigned int my_hook_fn_pre_routing(void *priv,
     	// 문제상황 htons, ntohs의 사용법을 몰라 결과가 정상적으로 나오지 않았음. 
     	th->source = htons((unsigned short)7777);
         th->dest = htons((unsigned short)7777);
-	ih->daddr = htonl((unsigned long)3232261120); //192.168.1.0
+		ih->daddr = htonl((unsigned long)3232261120); //192.168.1.0
+    
         // Packet Forwarding (Change destination of packet)
-	printk("%d\n",ih->daddr);
-	printk("%d\n",ih->saddr);
+		printk("%d\n",ih->daddr);
+		printk("%d\n",ih->saddr);
 
-	unsigned char protocol = ih->protocol; // protocol
-        unsigned short Sport = ntohs(th->source); // Sport
-        unsigned short Dport = ntohs(th->dest); // Dport
-        unsigned char *SIP2 = convert_to_ip(ih->saddr); // Source IP
-        unsigned char *DIP2 = convert_to_ip(ih->daddr); // Destination IP
+        unsigned char SIP2[4] = convert_to_ip(ih->saddr); // Source IP
+        unsigned char DIP2[4] = convert_to_ip(ih->daddr); // Destination IP
 
         printk("CHANGED SIP: %d.%d.%d.%d\n", SIP2[0],SIP2[1],SIP2[2],SIP2[3]);
         printk("CHANGED DIP: %d.%d.%d.%d\n", DIP2[0],DIP2[1],DIP2[2],DIP2[3]);
 
-	printk("%d\n",ih->daddr);
+		printk("%d\n",ih->daddr);
         printk("%d\n",ih->saddr);
 
 	printk("CHANGED PRE_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d\n",
