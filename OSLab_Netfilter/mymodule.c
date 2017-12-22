@@ -30,33 +30,50 @@ static unsigned int my_hook_fn_pre_routing(void *priv,
 							   const struct nf_hook_state *state
 								){
 	/* 후킹함수 작성 */
-		printk(KERN_INFO "a\n");
 	struct iphdr *ih = ip_hdr(skb);
 	struct tcphdr *th = tcp_hdr(skb);
-		printk(KERN_INFO "b\n");
 
 	unsigned char protocol = ih->protocol; // protocol
 	unsigned short Sport = ntohs(th->source); // Sport
 	unsigned short Dport = ntohs(th->dest); // Dport
 	unsigned char *SIP = convert_to_ip(ih->saddr); // Source IP
 	unsigned char *DIP = convert_to_ip(ih->daddr); // Destination IP
-		printk(KERN_INFO "c\n");
-    printk("PRE_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d",
+
+
+	printk("PRE_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d\n",
    		protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
-		printk(KERN_INFO "d\n");
-	//서버의 33333 포트에서 온 패킷을 Forwarding 대상으로 지정
-    if (Sport == 33333) {
+    //서버의 33333 포트에서 온 패킷을 Forwarding 대상으로 지정
+    if (Sport == (unsigned short)33333) {
 
     	// change Port to 7777
     	// 문제상황 htons, ntohs의 사용법을 몰라 결과가 정상적으로 나오지 않았음. 
-    	th->source = htons(7777);
-        th->dest = htons(7777);
-
+    	th->source = htons((unsigned short)7777);
+        th->dest = htons((unsigned short)7777);
+	ih->daddr = htonl((unsigned long)3232261120); //192.168.1.0
         // Packet Forwarding (Change destination of packet)
-        return NF_ACCEPT;
+	printk("%d\n",ih->daddr);
+	printk("%d\n",ih->saddr);
+
+	unsigned char protocol = ih->protocol; // protocol
+        unsigned short Sport = ntohs(th->source); // Sport
+        unsigned short Dport = ntohs(th->dest); // Dport
+        unsigned char *SIP2 = convert_to_ip(ih->saddr); // Source IP
+        unsigned char *DIP2 = convert_to_ip(ih->daddr); // Destination IP
+
+        printk("CHANGED SIP: %d.%d.%d.%d\n", SIP2[0],SIP2[1],SIP2[2],SIP2[3]);
+        printk("CHANGED DIP: %d.%d.%d.%d\n", DIP2[0],DIP2[1],DIP2[2],DIP2[3]);
+
+	printk("%d\n",ih->daddr);
+        printk("%d\n",ih->saddr);
+
+	printk("CHANGED PRE_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d\n",
+protocol, Sport, Dport,SIP2[0],SIP2[1],SIP2[2],SIP2[3],DIP2[0],DIP2[1],DIP2[2],DIP2[3]);
+
+
+	return NF_ACCEPT;
     }
 
-    return NF_ACCEPT;
+    return NF_DROP;
 }
 
 static unsigned int my_hook_fn_forward(void *priv,
@@ -73,7 +90,7 @@ static unsigned int my_hook_fn_forward(void *priv,
 	unsigned char *SIP = convert_to_ip(ih->saddr); // Source IP
 	unsigned char *DIP = convert_to_ip(ih->daddr); // Destination IP
 
-    printk("FORWARD packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d",
+    printk("FORWARD packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d\n",
     	protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
 
     return NF_ACCEPT;
@@ -93,7 +110,7 @@ static unsigned int my_hook_fn_post_routing(void *priv,
 	unsigned char *SIP = convert_to_ip(ih->saddr); // Source IP
 	unsigned char *DIP = convert_to_ip(ih->daddr); // Destination IP
 
-    printk("POST_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d",
+    printk("POST_ROUTING packet| protocol: %d, Sport: %hu, Dport: %hu, SIP: %d.%d.%d.%d, DIP: %d.%d.%d.%d\n",
     	protocol, Sport, Dport,SIP[0],SIP[1],SIP[2],SIP[3],DIP[0],DIP[1],DIP[2],DIP[3]);
 
     return NF_ACCEPT;
@@ -139,9 +156,9 @@ static int __init my_init(void)
 static void __exit my_exit(void)
 {
 	printk(KERN_INFO "exit\n");
-	nf_unregister_hook(&my_hook_fn_pre_routing);
-	nf_unregister_hook(&my_hook_fn_forward);
-	nf_unregister_hook(&my_hook_fn_post_routing);
+	nf_unregister_hook(&my_nf_ops_pre_routing);
+	nf_unregister_hook(&my_nf_ops_forward);
+	nf_unregister_hook(&my_nf_ops_post_routing);
 	return;
 }
 

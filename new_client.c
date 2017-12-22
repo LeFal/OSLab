@@ -9,7 +9,7 @@
 #include <unistd.h>
  
 #define BUF_LEN 100000
-int port[5] = {33333,4444,5555,6666,7777};
+int port[5] = {4444,5555,6666,7777,8888};
  
 void *connection_handler(int port);
  
@@ -44,7 +44,7 @@ void *connection_handler(int port){
   memset(&server_addr, 0, sizeof(server_addr));
   server_addr.sin_family = AF_INET;
   server_addr.sin_port = htons(port);
-  server_addr.sin_addr.s_addr = inet_addr("192.168.56.101");
+  server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
  
   printf("port : %d", port);
  
@@ -68,18 +68,12 @@ void *connection_handler(int port){
     int ret = read(client_fd, buffer, BUF_LEN - 1);
     if (ret <= 0) break;
  
-    printf("read : %s\n", buffer);
-
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    double time_in_ms = (tv.tv_sec) * 1000 + (tv.tv_usec) / 1000;
+    //printf("read : %s\n", buffer);
  
-    time_t timer;
-    time(&timer);
-    struct tm *tm_struct = localtime(&timer);
-    fprintf(file, "%d:%d:%d:%2lf <%d> <%s>\n",
+    struct tm *tm_struct = localtime_r(time(NULL));
+    fprintf(file, "%d:%d:%d <%d> <%s>\n",
       tm_struct->tm_hour, tm_struct->tm_min, tm_struct->tm_sec,
-      time_in_ms, ret, buffer);
+      strlen(buffer), buffer);
     memset(buffer, 0, sizeof(buffer));
   }
  
